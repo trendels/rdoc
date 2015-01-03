@@ -23,7 +23,7 @@ pandoc_to := html5
 link_files := $(python_modules:%=build/%.links)
 html_files := $(python_modules:%=build/%.html)
 
-all: $(html_files)
+all: links $(html_files)
 
 rules:
 	python make_rules.py $(python_modules) > $@
@@ -33,7 +33,7 @@ links: $(link_files)
 
 -include rules
 
-%.html: %.mkd links
+%.html: %.mkd
 	LINKS=links $(pandoc_bin) $(pandoc_opts) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
 
 clean:
