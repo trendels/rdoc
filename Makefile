@@ -22,6 +22,7 @@ pandoc_to := html5
 
 link_files := $(python_modules:%=build/%.links)
 html_files := $(python_modules:%=build/%.html)
+html_files += build/index.html
 
 all: links $(html_files)
 
@@ -30,6 +31,9 @@ rules:
 
 links: $(link_files)
 	cat build/*.links | sort > links
+
+build/index.mkd:
+	python make_index.py $(python_modules) > $@
 
 -include rules
 
