@@ -58,7 +58,7 @@ def format_module_docs(module_name):
     module = importlib.import_module(module_name)
     source = inspect.getsourcefile(module)
     doc.write('# Module `%(name)s` {#%(name)s}\n' % {'name': module_name})
-    toc.write('[Module `%(name)s`](#%(name)s)\n' % {'name':  module_name})
+    toc.write('  - [Module `%(name)s`](#%(name)s)\n' % {'name':  module_name})
     links.write('%(name)s|%(name)s.html#%(name)s\n' % {'name': module_name})
 
     format_docstring(doc, module)
@@ -97,11 +97,11 @@ def format_module_docs(module_name):
 
     if classes:
         doc.write('\n## Classes\n\n')
-        toc.write('\n[Classes](#classes)\n\n')
+        toc.write('      - [Classes](#classes)\n')
         for name, cls, alias in classes:
             doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
                     % {'name': name})
-            toc.write('  - [%(name)s](#%(name)s)\n' % {'name': name})
+            toc.write('          - `%(name)s`\n' % {'name': name})
             links.write('%(module_name)s.%(name)s'
                         '|%(module_name)s.html#%(name)s\n'
                         % {'module_name': module_name, 'name': name})
@@ -113,12 +113,12 @@ def format_module_docs(module_name):
 
     if functions:
         doc.write('\n## Functions\n\n')
-        toc.write('\n[Functions](#functions)\n\n')
+        toc.write('      - [Functions](#functions)\n')
         for name, fn, alias in functions:
             signature = name + inspect.formatargspec(*inspect.getargspec(fn))
             doc.write('\n### `%(signature)s`{.python} {#%(name)s}\n\n'
                     % {'signature': signature, 'name': name})
-            toc.write('  - [%(name)s](#%(name)s)\n' % {'name': name})
+            toc.write('          - `%(name)s`\n' % {'name': name})
             links.write('%(module_name)s.%(name)s'
                         '|%(module_name)s.html#%(name)s\n'
                         % {'module_name': module_name, 'name': name})
@@ -129,11 +129,11 @@ def format_module_docs(module_name):
 
     if exceptions:
         doc.write('\n## Exceptions\n\n')
-        toc.write('\n[Exceptions](#exceptions)\n\n')
+        toc.write('      - [Exceptions](#exceptions)\n')
         for name, cls, alias in exceptions:
             doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
                     % {'name': name})
-            toc.write('  - [%(name)s](#%(name)s)\n' % {'name': name})
+            toc.write('          - `%(name)s`\n' % {'name': name})
             links.write('%(module_name)s.%(name)s'
                         '|%(module_name)s.html#%(name)s\n'
                         % {'module_name': module_name, 'name': name})
