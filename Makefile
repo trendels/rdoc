@@ -14,26 +14,29 @@ python_modules :=	\
 
 pandoc_bin := pandoc
 pandoc_opts := --smart --indented-code-classes=python --standalone \
-	--section-divs --css=../style.css --filter=filters/highlight_builtins.py
+	--section-divs --css=../style.css \
+	--filter=filters/highlight_builtins.py \
+	--filter=filters/autolink.py
 pandoc_from := markdown+compact_definition_lists
 pandoc_to := html5
 
-mkd_files  := $(python_modules:%=build/%.mkd)
+link_files := $(python_modules:%=build/%.links)
 html_files := $(python_modules:%=build/%.html)
 
-all: rules $(html_files)
+all: $(html_files)
 
 rules:
 	python make_rules.py $(python_modules) > $@
 
+links: $(link_files)
+	cat build/*.links | sort > links
+
 -include rules
 
-%.html: %.mkd
-	$(pandoc_bin) $(pandoc_opts) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
+%.html: %.mkd links
+	LINKS=links $(pandoc_bin) $(pandoc_opts) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
 
 clean:
-	rm -rf rules build/
+	rm -rf rules links build/
 
 .PHONY: all clean
-
-.PRECIOUS: %.mkd

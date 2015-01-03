@@ -64,11 +64,13 @@ def format_class_members(f, cls, class_name):
 def format_module_docs(module_name):
     toc = StringIO()
     doc = StringIO()
+    links = StringIO()
 
     module = importlib.import_module(module_name)
     source = inspect.getsourcefile(module)
     doc.write('# Module `%(name)s` {#%(name)s}\n' % {'name': module_name})
     toc.write('[Module `%(name)s`](#%(name)s)\n\n' % {'name':  module_name})
+    links.write('%(name)s|%(name)s.html#%(name)s\n' % {'name': module_name})
 
     format_docstring(doc, module)
 
@@ -111,6 +113,9 @@ def format_module_docs(module_name):
             doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
                     % {'name': name})
             toc.write('  - [%(name)s](#%(name)s)\n' % {'name': name})
+            links.write('%(module_name)s.%(name)s'
+                        '|%(module_name)s.html#%(name)s\n'
+                        % {'module_name': module_name, 'name': name})
             if alias:
                 format_alias(doc, alias)
             else:
@@ -127,6 +132,9 @@ def format_module_docs(module_name):
             doc.write('\n### `%(signature)s`{.python} {#%(name)s}\n\n'
                     % {'signature': signature, 'name': name})
             toc.write('  - [%(name)s](#%(name)s)\n' % {'name': name})
+            links.write('%(module_name)s.%(name)s'
+                        '|%(module_name)s.html#%(name)s\n'
+                        % {'module_name': module_name, 'name': name})
             if alias:
                 format_alias(doc, alias)
             else:
@@ -139,12 +147,15 @@ def format_module_docs(module_name):
             doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
                     % {'name': name})
             toc.write('  - [%(name)s](#%(name)s)\n' % {'name': name})
+            links.write('%(module_name)s.%(name)s'
+                        '|%(module_name)s.html#%(name)s\n'
+                        % {'module_name': module_name, 'name': name})
             if alias:
                 format_alias(doc, alias)
             else:
                 format_docstring(doc, cls)
 
-    return doc, toc
+    return doc, toc, links
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
@@ -153,9 +164,15 @@ if __name__ == '__main__':
 
     module_name, output_dir = sys.argv[1:]
     mkd_path = os.path.join(output_dir, module_name + '.mkd')
-    doc, toc = format_module_docs(module_name)
+    link_path = os.path.join(output_dir, module_name + '.links')
+    doc, toc, links = format_module_docs(module_name)
 
     with open(mkd_path, 'w') as f:
+        # TODO: html title, etc
+        f.write('---\nmodule: %(name)s\n---\n\n' % {'name': module_name})
         f.write('<div id="module-toc">\n' + toc.getvalue() + '\n</div>')
         f.write('\n')
         f.write(doc.getvalue())
+
+    with open(link_path, 'w') as f:
+        f.write(links.getvalue())
