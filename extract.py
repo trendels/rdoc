@@ -82,6 +82,10 @@ def format_module_docs(module_name):
     for name in members:
         attr = getattr(module, name)
         try:
+            # FIXME When e.g. a function is wrapped with another function
+            # (e.g. a decorator) that has been imported from another module,
+            # it will be treated as "not local" here, because getsourcefile()
+            # will return the file name of the wrapping function.
             is_local = inspect.getsourcefile(attr) == source
         except TypeError:
             is_local = False
