@@ -8,4 +8,4 @@ for module_name in sys.argv[1:]:
     path = inspect.getsourcefile(module)
     print "build/%s.mkd: %s" % (module_name, path)
     print "\t@mkdir -p $(dir $@)"
-    print "\tpython extract.py %s > $@" % module_name
+    print "\tpython extract.py %s build/" % module_name

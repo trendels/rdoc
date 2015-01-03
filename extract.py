@@ -1,10 +1,11 @@
 """
-Usage: convert.py <module-name>
+Usage: convert.py <module-name> <output-dir>
 
 Prints documentation from in `module-name` to stdout using pandoc's markdown.
 """
 import importlib
 import inspect
+import os
 import sys
 from StringIO import StringIO
 
@@ -141,12 +142,15 @@ def format_module_docs(module_name):
     return doc, toc
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         usage = __doc__.strip()
         sys.exit(usage)
-    module_name = sys.argv[1]
+
+    module_name, output_dir = sys.argv[1:]
+    mkd_path = os.path.join(output_dir, module_name + '.mkd')
     doc, toc = format_module_docs(module_name)
 
-    print '<div id="module-toc">\n' + toc.getvalue() + '\n</div>'
-    print
-    print doc.getvalue()
+    with open(mkd_path, 'w') as f:
+        f.write('<div id="module-toc">\n' + toc.getvalue() + '\n</div>')
+        f.write('\n')
+        f.write(doc.getvalue())
