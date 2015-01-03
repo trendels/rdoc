@@ -14,31 +14,42 @@ python_modules :=	\
 
 pandoc_bin := pandoc
 pandoc_opts := --smart --indented-code-classes=python --standalone \
-	--section-divs --css=../../style.css \
+	--section-divs \
 	--filter=filters/highlight_builtins.py \
 	--filter=filters/autolink.py
 pandoc_from := markdown+compact_definition_lists
 pandoc_to := html5
 
-link_files := $(python_modules:%=build/api/%.links)
-html_files := $(python_modules:%=build/api/%.html)
-html_files += build/api/index.html
+api_links := $(python_modules:%=build/api/%.links)
+api_html := $(python_modules:%=build/api/%.html)
+api_html += build/api/index.html
 
-all: links $(html_files)
+src_files := $(shell find src/ -name *.mkd)
+doc_html := $(src_files:src/%.mkd=build/%.html)
+
+all: links build/style.css $(api_html) $(doc_html)
 
 rules:
 	python make_rules.py $(python_modules) > $@
 
-links: $(link_files)
+links: $(api_links)
 	cat build/api/*.links | sort > links
 
 build/api/index.mkd:
 	python make_index.py $(python_modules) > $@
 
+build/style.css: style.css
+	mkdir -p build
+	cp style.css build/
+
 -include rules
 
+build/%.html: src/%.mkd
+	@mkdir -p $(dir $@)
+	LINKS=links $(pandoc_bin) $(pandoc_opts) --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
+
 %.html: %.mkd
-	LINKS=links $(pandoc_bin) $(pandoc_opts) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
+	LINKS=links $(pandoc_bin) $(pandoc_opts) --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
 
 clean:
 	rm -rf rules links build/
