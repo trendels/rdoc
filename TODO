@@ -1,3 +1,5 @@
+- Global Table of Contents.
+- Ability to add documentation chapters as markdown files.
 - Document module and class variables (no docstrings, just show contents)
   (config option).
 - Skip undocumented functions, methods, descriptors, classes, etc.
