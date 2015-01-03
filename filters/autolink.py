@@ -2,12 +2,20 @@
 """
 Pandoc filter to insert automatic links to classes, functions and modules.
 """
-import os
-from functools import partial
+import os.path
 
 from pandocfilters import toJSONFilter, Code, Link
 
-def autolink(key, value, format, meta, links):
+links = {}
+
+def autolink(key, value, format, meta):
+    if 'links' in meta and not links:
+        links_file = meta['links']['c']
+        with open(links_file) as f:
+            for line in f:
+                name, target = line.strip().split('|', 1)
+                links[name] = target
+        links[None] = None   # Create dummy key to links is True in all cases
     if key == 'Code':
         # For 'Code', the value has the form (attr_list, str),
         # where attr_list is (identifiers, class_list, kv)
@@ -44,11 +52,4 @@ def autolink(key, value, format, meta, links):
             return Link([Code(attr_list, string)], [href, ''])  # TODO add title
 
 if __name__ == '__main__':
-    links_file = os.getenv('LINKS', 'links')
-    links = {}
-    with open(links_file) as f:
-        for line in f:
-            name, target = line.strip().split('|', 1)
-            links[name] = target
-    action = partial(autolink, links=links)
-    toJSONFilter(action)
+    toJSONFilter(autolink)

@@ -46,10 +46,10 @@ build/style.css: style.css
 
 build/%.html: src/%.mkd
 	@mkdir -p $(dir $@)
-	LINKS=links $(pandoc_bin) $(pandoc_opts) --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
+	$(pandoc_bin) $(pandoc_opts) --metadata=links:./links --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
 
 %.html: %.mkd
-	LINKS=links $(pandoc_bin) $(pandoc_opts) --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
+	$(pandoc_bin) $(pandoc_opts) --metadata=links:./links --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
 
 clean:
 	rm -rf rules links build/
