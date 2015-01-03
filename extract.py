@@ -1,7 +1,8 @@
 """
-Usage: convert.py <module-name> <output-dir>
+Usage: extract.py <module-name> <output-dir>
 
-Prints documentation from in `module-name` to stdout using pandoc's markdown.
+Extracts documentation from <module-name> to files <module_name>.mkd
+and <module_name>.links in <output_dir>.
 """
 import importlib
 import inspect
