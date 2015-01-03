@@ -14,7 +14,7 @@ python_modules :=	\
 
 pandoc_bin := pandoc
 pandoc_opts := --smart --indented-code-classes=python --standalone \
-	--section-divs --css=../style.css
+	--section-divs --css=../style.css --filter=filters/highlight_builtins.py
 pandoc_from := markdown+compact_definition_lists
 pandoc_to := html5
 
