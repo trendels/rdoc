@@ -10,13 +10,6 @@ import os
 import sys
 from StringIO import StringIO
 
-# TODO
-#   - Document module and class variables (no docstrings, just show contents)?
-#   - Skip undocumented functions, methods, descriptors, classes, etc.
-#   - Process signature overrides form 1st line of docstring for functions
-#     and methods.
-#   - Add links to base classes.
-
 def format_docstring(f, obj):
     docstring = inspect.getdoc(obj)
     if docstring:
@@ -115,7 +108,6 @@ def format_module_docs(module_name):
             if alias:
                 format_alias(doc, alias)
             else:
-                # TODO document base classes
                 format_docstring(doc, cls)
                 format_class_members(doc, cls, name)
 
@@ -163,7 +155,6 @@ if __name__ == '__main__':
     doc, toc, links = format_module_docs(module_name)
 
     with open(mkd_path, 'w') as f:
-        # TODO: html title, etc
         f.write('---\nmodule: %(name)s\n---\n\n' % {'name': module_name})
         f.write('<div id="module-toc">\n' + toc.getvalue() + '\n</div>')
         f.write('\n')

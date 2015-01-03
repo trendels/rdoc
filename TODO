@@ -1,0 +1,14 @@
+- Document module and class variables (no docstrings, just show contents)
+  (config option).
+- Skip undocumented functions, methods, descriptors, classes, etc.
+- Process signature overrides form 1st line of docstring for functions
+  and methods.
+- Nicer formatting for constructors.
+- Add links to base classes.
+- Add more pandoc metadata, like page titles.
+- Add links to class members.
+- Add default link prefix, to resolve bare links to `attr` to `prefix.attr`
+  (config option).
+- Automatically resolve aliases in links, e.g. when linking to `module.attr`
+  where `attr` is imported from `module.foo`, the link should resolve to
+  `module.foo.attr` (config option).
