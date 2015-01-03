@@ -11,15 +11,11 @@ import sys
 from StringIO import StringIO
 
 # TODO
-#   - Drop the custom json format, just inspect the modules again.
-#   - We don't even need to resolve references here. It's all done by the
-#     pandoc filter (TBD). The only place we need refs is imported members
-#     that are also in `__all__`. For these, just drop the complete name
-#     in `````s, and let the filter resolve them later.
-#   - Structure: write to 2 stringIO instances, one for the ToC and one for
-#     the docs. We can add another one for the index later.
 #   - Document module and class variables (no docstrings, just show contents)?
 #   - Skip undocumented functions, methods, descriptors, classes, etc.
+#   - Process signature overrides form 1st line of docstring for functions
+#     and methods.
+#   - Add links to base classes.
 
 def format_docstring(f, obj):
     docstring = inspect.getdoc(obj)
@@ -27,7 +23,6 @@ def format_docstring(f, obj):
         f.write('<div class="docstring">\n%s\n</div>\n' % docstring)
 
 
-# TODO process signature override from 1st line of docstring
 def format_method(f, fn, name, class_name):
     argspec = inspect.getargspec(fn)
     argspec = argspec._replace(args=argspec.args[1:]) # skip 'self'
@@ -128,7 +123,6 @@ def format_module_docs(module_name):
         doc.write('\n## Functions\n\n')
         toc.write('\n[Functions](#functions)\n\n')
         for name, fn, alias in functions:
-            # TODO process signature override from 1st line of docstring
             signature = name + inspect.formatargspec(*inspect.getargspec(fn))
             doc.write('\n### `%(signature)s`{.python} {#%(name)s}\n\n'
                     % {'signature': signature, 'name': name})
