@@ -69,7 +69,7 @@ def format_module_docs(module_name):
     module = importlib.import_module(module_name)
     source = inspect.getsourcefile(module)
     doc.write('# Module `%(name)s` {#%(name)s}\n' % {'name': module_name})
-    toc.write('[Module `%(name)s`](#%(name)s)\n\n' % {'name':  module_name})
+    toc.write('[Module `%(name)s`](#%(name)s)\n' % {'name':  module_name})
     links.write('%(name)s|%(name)s.html#%(name)s\n' % {'name': module_name})
 
     format_docstring(doc, module)
