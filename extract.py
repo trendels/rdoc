@@ -18,6 +18,7 @@ from StringIO import StringIO
 #   - Structure: write to 2 stringIO instances, one for the ToC and one for
 #     the docs. We can add another one for the index later.
 #   - Document module and class variables (no docstrings, just show contents)?
+#   - Skip undocumented functions, methods, descriptors, classes, etc.
 
 def format_docstring(f, obj):
     docstring = inspect.getdoc(obj)
