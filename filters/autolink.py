@@ -30,23 +30,22 @@ def autolink(key, value, format, meta):
         (attr_list, string) = value
         href = None
         if string in links:
-            href = links[string]
+            href = 'api/' + links[string]
         elif 'module' in meta:
-            # TODO why is module a list and filename is not?
+            # TODO why is module a list but link_prefix is not?
             module_name = meta['module']['c'][0]['c']
             # TODO allow '.foo', '..foo.bar', etc.
             link_target = module_name + '.' + string
             if link_target in links:
-                href = links[link_target]
+                href = 'api/' + links[link_target]
         if href is not None:
-            if 'filename' in meta:
-                filename = meta['filename']['c']
+            if 'link_prefix' in meta:
+                link_prefix = meta['link_prefix']['c']
                 if '#' in href:
                     path, anchor = href.split('#', 1)
                 else:
                     path, anchor = href, None
-                path = 'build/api/' + path
-                href = os.path.relpath(path, os.path.dirname(filename))
+                href = link_prefix + path
                 if anchor:
                     href += '#' + anchor
             return Link([Code(attr_list, string)], [href, ''])  # TODO add title
