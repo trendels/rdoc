@@ -71,7 +71,6 @@ def format_module_docs(module_name):
         module_name=module_name)
 
     module = importlib.import_module(module_name)
-    source = inspect.getsourcefile(module)
     out.doc.write('# Module `%(name)s` {#%(name)s}\n'
             % {'name': module_name})
     out.toc.write('  - [Module `%(name)s`](#%(name)s)\n'
@@ -91,11 +90,7 @@ def format_module_docs(module_name):
     for name in members:
         attr = getattr(module, name)
         try:
-            # FIXME When e.g. a function is wrapped with another function
-            # (e.g. a decorator) that has been imported from another module,
-            # it will be treated as "not local" here, because getsourcefile()
-            # will return the file name of the wrapping function.
-            is_local = inspect.getsourcefile(attr) == source
+            is_local = inspect.getmodule(attr) is module
         except TypeError:
             is_local = False
         if not is_local and name not in getattr(module, '__all__', []):
