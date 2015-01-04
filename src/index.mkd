@@ -1,7 +1,8 @@
 ---
 title: Welcome
+show_toc: false
 ---
 
-# Documentation
+Documentation:
 
   - [Module Index](modules/index.html)

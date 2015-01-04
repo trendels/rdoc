@@ -5,5 +5,5 @@ sidebar_links:
   - title: Module Index
     href: modules/index.html
 show_title: true
-show_toc: true
+show_toc: false
 ...
