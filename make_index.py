@@ -1,5 +1,5 @@
 import sys
 
-print "% API Documentation\n"
+print "---\ntitle: API Documentation\n---\n"
 for module_name in sys.argv[1:]:
     print "  - `%s`" % module_name
