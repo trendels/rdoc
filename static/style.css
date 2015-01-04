@@ -30,3 +30,9 @@ a { text-decoration: none; }
     width: 90%;
     margin-left: 5%;
 }
+#module-toc {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 35ex;
+}
