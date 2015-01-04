@@ -8,60 +8,66 @@ import importlib
 import inspect
 import os
 import sys
+from collections import namedtuple
 from StringIO import StringIO
 
-def format_docstring(f, obj):
+output = namedtuple('output', 'doc toc links')
+
+
+def format_docstring(out, obj):
     docstring = inspect.getdoc(obj)
     if docstring:
-        f.write('<div class="docstring">\n%s\n</div>\n' % docstring)
+        out.doc.write('<div class="docstring">\n%s\n</div>\n' % docstring)
 
 
-def format_method(f, fn, name, class_name):
+def format_method(out, fn, name, class_name):
     argspec = inspect.getargspec(fn)
     argspec = argspec._replace(args=argspec.args[1:]) # skip 'self'
     signature = name + inspect.formatargspec(*argspec)
-    f.write('\n#### `%(signature)s`{.python} {#%(class_name)s.%(name)s}\n\n'
+    out.doc.write('\n#### `%(signature)s`{.python}'
+            ' {#%(class_name)s.%(name)s}\n\n'
             % {'signature': signature, 'class_name': class_name, 'name': name})
-    format_docstring(f, fn)
+    format_docstring(out, fn)
 
 
-def format_descriptor(f, descriptor, name, class_name):
-    f.write('\n#### `%(name)s` {#%(class_name)s.%(name)s}\n\n'
+def format_descriptor(out, descriptor, name, class_name):
+    out.doc.write('\n#### `%(name)s` {#%(class_name)s.%(name)s}\n\n'
             % {'class_name': class_name, 'name': name})
-    format_docstring(f, descriptor)
+    format_docstring(out, descriptor)
 
 
-def format_alias(f, alias):
-    f.write('Alias for `%s`.\n' % alias)
+def format_alias(out, alias):
+    out.doc.write('Alias for `%s`.\n' % alias)
 
 
-def format_class_members(f, cls, class_name):
+def format_class_members(out, cls, class_name):
     if inspect.ismethod(cls.__init__):  # False for object.__init__
-        format_method(f, cls.__init__, '__init__', class_name)
+        format_method(out, cls.__init__, '__init__', class_name)
     for name in dir(cls):
         if name.startswith('_'):
             continue
         attr = getattr(cls, name)
         if inspect.ismethod(attr):  # method or classmethod
-            format_method(f, attr, name, class_name)
+            format_method(out, attr, name, class_name)
         elif inspect.isfunction(attr):  # staticmethod
-            format_method(f, attr, name, class_name)
+            format_method(out, attr, name, class_name)
         elif inspect.isdatadescriptor(attr):  # descriptor, e.g. property
-            format_descriptor(f, attr, name, class_name)
+            format_descriptor(out, attr, name, class_name)
 
 
 def format_module_docs(module_name):
-    toc = StringIO()
-    doc = StringIO()
-    links = StringIO()
+    out = output(doc=StringIO(), toc=StringIO(), links=StringIO())
 
     module = importlib.import_module(module_name)
     source = inspect.getsourcefile(module)
-    doc.write('# Module `%(name)s` {#%(name)s}\n' % {'name': module_name})
-    toc.write('  - [Module `%(name)s`](#%(name)s)\n' % {'name':  module_name})
-    links.write('%(name)s|%(name)s.html#%(name)s\n' % {'name': module_name})
+    out.doc.write('# Module `%(name)s` {#%(name)s}\n'
+            % {'name': module_name})
+    out.toc.write('  - [Module `%(name)s`](#%(name)s)\n'
+            % {'name':  module_name})
+    out.links.write('%(name)s|%(name)s.html#%(name)s\n'
+            % {'name': module_name})
 
-    format_docstring(doc, module)
+    format_docstring(out, module)
 
     if hasattr(module, '__all__'):
         members = module.__all__
@@ -96,53 +102,53 @@ def format_module_docs(module_name):
             functions.append((name, attr, alias))
 
     if classes:
-        doc.write('\n## Classes\n\n')
-        toc.write('      - [Classes](#classes)\n')
+        out.doc.write('\n## Classes\n\n')
+        out.toc.write('      - [Classes](#classes)\n')
         for name, cls, alias in classes:
-            doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
+            out.doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
                     % {'name': name})
-            toc.write('          - `%(name)s`\n' % {'name': name})
-            links.write('%(module_name)s.%(name)s'
-                        '|%(module_name)s.html#%(name)s\n'
-                        % {'module_name': module_name, 'name': name})
+            out.toc.write('          - `%(name)s`\n' % {'name': name})
+            out.links.write('%(module_name)s.%(name)s'
+                    '|%(module_name)s.html#%(name)s\n'
+                    % {'module_name': module_name, 'name': name})
             if alias:
-                format_alias(doc, alias)
+                format_alias(out, alias)
             else:
-                format_docstring(doc, cls)
-                format_class_members(doc, cls, name)
+                format_docstring(out, cls)
+                format_class_members(out, cls, name)
 
     if functions:
-        doc.write('\n## Functions\n\n')
-        toc.write('      - [Functions](#functions)\n')
+        out.doc.write('\n## Functions\n\n')
+        out.toc.write('      - [Functions](#functions)\n')
         for name, fn, alias in functions:
             signature = name + inspect.formatargspec(*inspect.getargspec(fn))
-            doc.write('\n### `%(signature)s`{.python} {#%(name)s}\n\n'
+            out.doc.write('\n### `%(signature)s`{.python} {#%(name)s}\n\n'
                     % {'signature': signature, 'name': name})
-            toc.write('          - `%(name)s`\n' % {'name': name})
-            links.write('%(module_name)s.%(name)s'
-                        '|%(module_name)s.html#%(name)s\n'
-                        % {'module_name': module_name, 'name': name})
+            out.toc.write('          - `%(name)s`\n' % {'name': name})
+            out.links.write('%(module_name)s.%(name)s'
+                    '|%(module_name)s.html#%(name)s\n'
+                    % {'module_name': module_name, 'name': name})
             if alias:
-                format_alias(doc, alias)
+                format_alias(out, alias)
             else:
-                format_docstring(doc, fn)
+                format_docstring(out, fn)
 
     if exceptions:
-        doc.write('\n## Exceptions\n\n')
-        toc.write('      - [Exceptions](#exceptions)\n')
+        out.doc.write('\n## Exceptions\n\n')
+        out.toc.write('      - [Exceptions](#exceptions)\n')
         for name, cls, alias in exceptions:
-            doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
+            out.doc.write('\n### `class %(name)s`{.python} {#%(name)s}\n\n'
                     % {'name': name})
-            toc.write('          - `%(name)s`\n' % {'name': name})
-            links.write('%(module_name)s.%(name)s'
-                        '|%(module_name)s.html#%(name)s\n'
-                        % {'module_name': module_name, 'name': name})
+            out.toc.write('          - `%(name)s`\n' % {'name': name})
+            out.links.write('%(module_name)s.%(name)s'
+                    '|%(module_name)s.html#%(name)s\n'
+                    % {'module_name': module_name, 'name': name})
             if alias:
-                format_alias(doc, alias)
+                format_alias(out, alias)
             else:
-                format_docstring(doc, cls)
+                format_docstring(out, cls)
 
-    return doc, toc, links
+    return out
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
