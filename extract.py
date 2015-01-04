@@ -100,11 +100,14 @@ def format_module_docs(module_name):
             is_local = False
         if not is_local and name not in getattr(module, '__all__', []):
             continue
-        if is_local:
-            alias = None
-        else:
-            other_module = inspect.getmodule(attr)
-            alias = other_module.__name__ + '.' + attr.__name__
+        alias = None
+        if not is_local:
+            try:
+                # Only works for (non-C) functions and classes
+                other_module = inspect.getmodule(attr)
+                alias = other_module.__name__ + '.' + attr.__name__
+            except:
+                pass
         if inspect.isclass(attr):
             if issubclass(attr, Exception):
                 exceptions.append((name, attr, alias))
