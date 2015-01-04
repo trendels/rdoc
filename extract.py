@@ -173,7 +173,8 @@ if __name__ == '__main__':
     out = format_module_docs(module_name)
 
     with open(mkd_path, 'w') as f:
-        f.write('---\nmodule: %(name)s\n---\n\n' % {'name': module_name})
+        f.write('---\ntitle: Module %(name)s\nmodule: %(name)s\n---\n\n'
+                % {'name': module_name})
         f.write('<div id="module-toc">\n' + out.toc.getvalue() + '\n</div>\n')
         f.write('\n')
         f.write(out.doc.getvalue())
