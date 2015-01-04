@@ -52,11 +52,11 @@ build/html/static/%: static/%
 
 build/html/%.html: src/%.mkd
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< sidebar.yml > $@
+	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml > $@
 
 build/html/api/%.html: build/api/%.mkd
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< sidebar.yml > $@
+	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml > $@
 
 clean:
 	rm -rf build/
