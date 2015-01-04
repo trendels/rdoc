@@ -35,4 +35,6 @@ a { text-decoration: none; }
     top: 0;
     right: 0;
     width: 35ex;
+    height: 100%;
+    overflow: auto;
 }
