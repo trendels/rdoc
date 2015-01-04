@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
     with open(mkd_path, 'w') as f:
         f.write('---\nmodule: %(name)s\n---\n\n' % {'name': module_name})
-        f.write('<div id="module-toc">\n' + toc.getvalue() + '\n</div>')
+        f.write('<div id="module-toc">\n' + toc.getvalue() + '\n</div>\n')
         f.write('\n')
         f.write(doc.getvalue())
 
