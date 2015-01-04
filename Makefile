@@ -6,6 +6,7 @@ python_modules :=	\
 	rhino.request 			\
 	rhino.response 			\
 	rhino.util 				\
+	rhino.http				\
 	rhino.test				\
 	rhino.errors			\
 	rhino.ext.jinja2		\
