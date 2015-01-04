@@ -8,7 +8,7 @@ pandoc_opts := --smart --indented-code-classes=python --standalone \
 pandoc_from := markdown+compact_definition_lists
 pandoc_to := html5
 
-ifneq "$(module_links)" ""
+ifneq "$(python_modules)" ""
 	pandoc_opts += --metadata=links:./build/links
 endif
 
