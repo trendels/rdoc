@@ -24,7 +24,7 @@ api_links := $(python_modules:%=build/api/%.links)
 api_html := $(python_modules:%=build/api/%.html)
 api_html += build/api/index.html
 
-src_files := $(shell find src/ -name *.mkd)
+src_files := $(shell find src/ -name '*.mkd')
 doc_html := $(src_files:src/%.mkd=build/%.html)
 
 all: links build/style.css $(api_html) $(doc_html)
