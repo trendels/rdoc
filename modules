@@ -1,0 +1,12 @@
+# The list of modules (in <module>[.<submodule> ...] notation, no file names)
+# that module documentation should be built for, one per line.
+#
+#   - All modules must be importable.
+#   - The modules will appear in this order on the Module Index page.
+#   - Lines beginnning with '#' are ignored.
+#
+# Example:
+#
+#mymodule
+#mymodule.foo
+#mymodule.bar
