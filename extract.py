@@ -11,7 +11,7 @@ import sys
 from collections import namedtuple
 from StringIO import StringIO
 
-output = namedtuple('output', 'doc toc links')
+output = namedtuple('output', 'doc toc links module_name')
 
 
 def format_docstring(out, obj):
@@ -24,15 +24,23 @@ def format_method(out, fn, name, class_name):
     argspec = inspect.getargspec(fn)
     argspec = argspec._replace(args=argspec.args[1:]) # skip 'self'
     signature = name + inspect.formatargspec(*argspec)
-    out.doc.write('\n#### `%(signature)s`{.python}'
-            ' {#%(class_name)s.%(name)s}\n\n'
-            % {'signature': signature, 'class_name': class_name, 'name': name})
+    method_name = '%s.%s' % (class_name, name)
+    out.doc.write('\n#### `%(signature)s`{.python} {#%(method_name)s}\n\n'
+            % {'signature': signature, 'method_name': method_name})
+    out.links.write('%(module_name)s.%(method_name)s'
+            '|%(module_name)s.html#%(method_name)s\n'
+            % {'module_name': out.module_name, 'method_name': method_name})
     format_docstring(out, fn)
 
 
 def format_descriptor(out, descriptor, name, class_name):
-    out.doc.write('\n#### `%(name)s` {#%(class_name)s.%(name)s}\n\n'
-            % {'class_name': class_name, 'name': name})
+    descriptor_name = '%s.%s' % (class_name, name)
+    out.doc.write('\n#### `%(name)s` {#%(descriptor_name)s}\n\n'
+            % {'name': name, 'descriptor_name': descriptor_name})
+    out.links.write('%(module_name)s.%(descriptor_name)s'
+            '|%(module_name)s.html#%(descriptor_name)s\n'
+            % {'module_name': out.module_name,
+               'descriptor_name': descriptor_name})
     format_docstring(out, descriptor)
 
 
@@ -56,7 +64,11 @@ def format_class_members(out, cls, class_name):
 
 
 def format_module_docs(module_name):
-    out = output(doc=StringIO(), toc=StringIO(), links=StringIO())
+    out = output(
+        doc=StringIO(),
+        toc=StringIO(),
+        links=StringIO(),
+        module_name=module_name)
 
     module = importlib.import_module(module_name)
     source = inspect.getsourcefile(module)
@@ -158,13 +170,13 @@ if __name__ == '__main__':
     module_name, output_dir = sys.argv[1:]
     mkd_path = os.path.join(output_dir, module_name + '.mkd')
     link_path = os.path.join(output_dir, module_name + '.links')
-    doc, toc, links = format_module_docs(module_name)
+    out = format_module_docs(module_name)
 
     with open(mkd_path, 'w') as f:
         f.write('---\nmodule: %(name)s\n---\n\n' % {'name': module_name})
-        f.write('<div id="module-toc">\n' + toc.getvalue() + '\n</div>\n')
+        f.write('<div id="module-toc">\n' + out.toc.getvalue() + '\n</div>\n')
         f.write('\n')
-        f.write(doc.getvalue())
+        f.write(out.doc.getvalue())
 
     with open(link_path, 'w') as f:
-        f.write(links.getvalue())
+        f.write(out.links.getvalue())
