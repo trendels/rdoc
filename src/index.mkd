@@ -4,4 +4,4 @@ title: Welcome
 
 # Documentation
 
-  - [API Reference](api/index.html)
+  - [Module Index](modules/index.html)

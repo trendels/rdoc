@@ -8,6 +8,8 @@ from pandocfilters import toJSONFilter, Code, Link
 
 links = {}
 
+# FIXME don't hardcode path 'modules/' in autolink()
+
 def autolink(key, value, format, meta):
     if 'links' in meta and not links:
         links_file = meta['links']['c']
@@ -30,14 +32,14 @@ def autolink(key, value, format, meta):
         (attr_list, string) = value
         href = None
         if string in links:
-            href = 'api/' + links[string]
+            href = 'modules/' + links[string]
         elif 'module' in meta:
             # TODO why is module a list but link_prefix is not?
             module_name = meta['module']['c'][0]['c']
             # TODO allow '.foo', '..foo.bar', etc.
             link_target = module_name + '.' + string
             if link_target in links:
-                href = 'api/' + links[link_target]
+                href = 'modules/' + links[link_target]
         if href is not None:
             if 'link_prefix' in meta:
                 link_prefix = meta['link_prefix']['c']
