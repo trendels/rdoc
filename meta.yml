@@ -4,4 +4,6 @@ sidebar_links:
     href: index.html
   - title: Module Index
     href: modules/index.html
+show_title: true
+show_toc: true
 ...

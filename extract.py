@@ -162,6 +162,15 @@ def format_module_docs(module_name):
 
     return out
 
+meta_template = '''\
+---
+title: Module %(module_name)s
+module: %(module_name)s
+show_toc: false
+show_title: false
+...
+'''
+
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         usage = __doc__.strip()
@@ -173,8 +182,7 @@ if __name__ == '__main__':
     out = format_module_docs(module_name)
 
     with open(mkd_path, 'w') as f:
-        f.write('---\ntitle: Module %(name)s\nmodule: %(name)s\n---\n\n'
-                % {'name': module_name})
+        f.write(meta_template % {'module_name': module_name})
         f.write('<div id="module-toc">\n' + out.toc.getvalue() + '\n</div>\n')
         f.write('\n')
         f.write(out.doc.getvalue())
