@@ -51,11 +51,11 @@ build/html/static/%: static/%
 
 -include build/rules
 
-build/html/%.html: src/%.mkd
+build/html/%.html: src/%.mkd meta.yml
 	@mkdir -p $(dir $@)
 	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml > $@
 
-build/html/modules/%.html: build/modules/%.mkd
+build/html/modules/%.html: build/modules/%.mkd meta.yml
 	@mkdir -p $(dir $@)
 	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml > $@
 
