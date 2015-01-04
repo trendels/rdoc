@@ -30,32 +30,35 @@ doc_html := $(src_files:src/%.mkd=build/html/%.html)
 static_src := $(shell find static/ -type f)
 static_files := $(static_src:static/%=build/html/static/%)
 
-all: links $(static_files) $(api_html) $(doc_html)
+all: build/links $(static_files) $(api_html) $(doc_html)
 
-rules:
+build/rules:
+	@mkdir -p $(dir $@)
 	python make_rules.py $(python_modules) > $@
 
-links: $(api_links)
-	cat build/api/*.links | sort > links
+build/links: $(api_links)
+	@mkdir -p $(dir $@)
+	cat build/api/*.links | sort > build/links
 
 build/api/index.mkd:
+	@mkdir -p $(dir $@)
 	python make_index.py $(python_modules) > $@
 
 build/html/static/%: static/%
 	@mkdir -p $(dir $@)
 	cp $< $@
 
--include rules
+-include build/rules
 
 build/html/%.html: src/%.mkd
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< sidebar.yml > $@
+	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< sidebar.yml > $@
 
 build/html/api/%.html: build/api/%.mkd
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< sidebar.yml > $@
+	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --metadata=links:./build/links --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< sidebar.yml > $@
 
 clean:
-	rm -rf rules links build/
+	rm -rf build/
 
 .PHONY: all clean
