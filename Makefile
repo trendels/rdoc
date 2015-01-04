@@ -27,7 +27,10 @@ api_html += build/api/index.html
 src_files := $(shell find src/ -name '*.mkd')
 doc_html := $(src_files:src/%.mkd=build/%.html)
 
-all: links build/style.css $(api_html) $(doc_html)
+static_src := $(shell find static/ -type f)
+static_files := $(static_src:static/%=build/static/%)
+
+all: links $(static_files) $(api_html) $(doc_html)
 
 rules:
 	python make_rules.py $(python_modules) > $@
@@ -38,18 +41,18 @@ links: $(api_links)
 build/api/index.mkd:
 	python make_index.py $(python_modules) > $@
 
-build/style.css: style.css
-	mkdir -p build
-	cp style.css build/
+build/static/%: static/%
+	@mkdir -p $(dir $@)
+	cp $< $@
 
 -include rules
 
 build/%.html: src/%.mkd
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) --metadata=links:./links --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
+	cat sidebar.yml $< | $(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build $@)/ --metadata=links:./links --metadata=filename:$@ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 > $@
 
 %.html: %.mkd
-	$(pandoc_bin) $(pandoc_opts) --metadata=links:./links --metadata=filename:$@ --css=$(shell python relpath.py build/style.css $@) --from=$(pandoc_from) --to=$(pandoc_to) $< > $@
+	cat sidebar.yml $< | $(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build $@)/ --metadata=links:./links --metadata=filename:$@ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 > $@
 
 clean:
 	rm -rf rules links build/

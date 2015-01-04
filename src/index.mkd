@@ -1,0 +1,7 @@
+---
+title: Welcome
+---
+
+# Documentation
+
+  - [API Reference](api/index.html)
