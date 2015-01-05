@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import importlib
 import inspect
 import sys

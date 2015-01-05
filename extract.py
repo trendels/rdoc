@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Usage: extract.py <module-name> <output-dir>
 

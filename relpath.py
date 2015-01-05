@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Usage: relpath.py <path> <start>
 
