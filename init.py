@@ -12,6 +12,7 @@ filters/autolink.py
 filters/highlight_builtins.py
 Makefile
 make_index.py
+make_links.py
 make_rules.py
 meta.yml
 modules
