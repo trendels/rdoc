@@ -34,13 +34,7 @@ def autolink(key, value, format, meta):
         if href is not None:
             if 'link_prefix' in meta:
                 link_prefix = meta['link_prefix']['c']
-                if '#' in href:
-                    path, anchor = href.split('#', 1)
-                else:
-                    path, anchor = href, None
-                href = link_prefix + path
-                if anchor:
-                    href += '#' + anchor
+                href = link_prefix + href
             return Link([Code(attr_list, string)], [href, ''])  # TODO add title
 
 if __name__ == '__main__':
