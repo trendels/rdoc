@@ -46,11 +46,11 @@ build/html/static/%: static/%
 
 build/html/%.html: src/%.mkd meta.yml modules
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) $(pandoc_module_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
+	$(pandoc_bin) $(pandoc_opts) $(pandoc_doc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
 
 build/html/modules/%.html: build/modules/%.mkd meta.yml modules
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) $(pandoc_doc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
+	$(pandoc_bin) $(pandoc_opts) $(pandoc_module_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
 
 clean:
 	rm -rf build/
