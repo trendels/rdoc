@@ -1,12 +1,18 @@
 python_modules := $(shell egrep -v '^\#' modules)
 
 pandoc_bin := pandoc
-pandoc_opts := --smart --indented-code-classes=python --standalone \
+pandoc_opts := --standalone \
 	--section-divs --toc \
 	--filter=filters/highlight_builtins.py \
 	--filter=filters/autolink.py
 pandoc_from := markdown+compact_definition_lists
 pandoc_to := html5
+
+# Additional pandoc options when building module documentation
+pandoc_module_opts := --indented-code-classes=python
+
+# Additional pandoc options when building other documentation
+pandoc_doc_opts :=
 
 module_links := $(python_modules:%=build/modules/%.links)
 module_html := $(python_modules:%=build/html/modules/%.html)
@@ -40,11 +46,11 @@ build/html/static/%: static/%
 
 build/html/%.html: src/%.mkd meta.yml modules
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
+	$(pandoc_bin) $(pandoc_opts) $(pandoc_module_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
 
 build/html/modules/%.html: build/modules/%.mkd meta.yml modules
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
+	$(pandoc_bin) $(pandoc_opts) $(pandoc_doc_opts) --metadata=link_prefix:$(shell python relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=pandoc.html5 $< meta.yml build/links.yml > $@
 
 clean:
 	rm -rf build/
