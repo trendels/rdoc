@@ -25,10 +25,12 @@ def autolink(key, value, format, meta):
         href = None
         if '|' in string:
             target, text = string.split('|', 1)
+            link = Str(text)
         else:
-            target, text = string, None
+            target = string
+            link = Code(attr_list, string)
         if target in links:
-            href = 'modules/' + links[string]['c'][0]['c']
+            href = 'modules/' + links[target]['c'][0]['c']
         elif 'module' in meta:
             module_name = meta['module']['c'][0]['c']
             # TODO allow '.foo', '..foo.bar', etc.
@@ -39,10 +41,6 @@ def autolink(key, value, format, meta):
             if 'link_prefix' in meta:
                 link_prefix = meta['link_prefix']['c']
                 href = link_prefix + href
-            if text is None:
-                link = Code(attr_list, target)
-            else:
-                link = Str(text)
             return Link([link], [href, ''])  # TODO add title
 
 if __name__ == '__main__':
