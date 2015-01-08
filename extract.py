@@ -56,6 +56,8 @@ def format_class_members(out, cls, class_name):
         if name.startswith('_'):
             continue
         attr = getattr(cls, name)
+        if not inspect.getdoc(attr):
+            continue
         if inspect.ismethod(attr):  # method or classmethod
             format_method(out, attr, name, class_name)
         elif inspect.isfunction(attr):  # staticmethod
