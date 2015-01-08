@@ -163,10 +163,9 @@ def format_module_docs(module_name):
 
 meta_template = '''\
 ---
-title: %(module_name)s
+pagetitle: %(module_name)s
 module: %(module_name)s
-show_toc: false
-show_title: false
+toc: false
 ...
 '''
 

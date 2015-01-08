@@ -1,6 +1,6 @@
 ---
 title: Welcome
-show_toc: false
+toc: false
 ---
 
 Documentation:
