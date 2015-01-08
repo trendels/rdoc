@@ -94,8 +94,9 @@ def format_module_docs(module_name):
             is_local = inspect.getmodule(attr) is module
         except TypeError:
             is_local = False
-        if not is_local and name not in getattr(module, '__all__', []):
-            continue
+        if name not in getattr(module, '__all__', []):
+            if not is_local or not inspect.getdoc(attr):
+                continue
         alias = None
         if not is_local:
             try:
