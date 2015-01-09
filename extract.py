@@ -56,6 +56,8 @@ def format_class_members(out, cls, class_name):
         if name.startswith('_'):
             continue
         attr = getattr(cls, name)
+        if name not in cls.__dict__:
+            continue
         if not inspect.getdoc(attr):
             continue
         if inspect.ismethod(attr):  # method or classmethod
