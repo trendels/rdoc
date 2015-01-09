@@ -130,6 +130,17 @@ def format_module_docs(module_name):
             if alias:
                 format_alias(out, alias)
             else:
+                base_names = []
+                for base in cls.__bases__:
+                    if base is object:
+                        continue
+                    other_module = inspect.getmodule(base)
+                    base_names.append(
+                            other_module.__name__ + '.' + base.__name__)
+                if base_names:
+                    out.doc.write(
+                            '<span class="bases">Inherits from %s.</span>\n'
+                            % ','.join('`%s`' % name for name in base_names))
                 format_docstring(out, cls)
                 format_class_members(out, cls, name)
 
