@@ -7,7 +7,7 @@ pandoc_opts := --standalone \
 	--filter=filters/autolink.py
 pandoc_from := markdown+compact_definition_lists
 pandoc_to := html5
-pandoc_template := ./templates/docs
+pandoc_template := ./templates/rdoc
 
 # Additional pandoc options when building module documentation
 pandoc_module_opts := --indented-code-classes=python
