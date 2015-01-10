@@ -1,16 +1,13 @@
-#!/usr/bin/env python
-"""
-Usage: extract.py <module-name> <output-dir>
+from __future__ import absolute_import
 
-Extracts documentation from <module-name> to files <module_name>.mkd
-and <module_name>.links in <output_dir>.
-"""
 import importlib
 import inspect
 import os
 import sys
 from collections import namedtuple
 from StringIO import StringIO
+
+from .util import usage
 
 output = namedtuple('output', 'doc toc links module_name')
 
@@ -185,10 +182,15 @@ toc: false
 ...
 '''
 
-if __name__ == '__main__':
+def extract():
+    """
+    Usage: extract.py <module-name> <output-dir>
+
+    Extracts documentation from <module-name> to files <module_name>.mkd
+    and <module_name>.links in <output_dir>.
+    """
     if len(sys.argv) != 3:
-        usage = __doc__.strip()
-        sys.exit(usage)
+        sys.exit(usage(extract))
 
     module_name, output_dir = sys.argv[1:]
     mkd_path = os.path.join(output_dir, module_name + '.mkd')

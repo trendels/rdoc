@@ -1,0 +1,46 @@
+html {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    line-height: 1.5em;
+    color: #333;
+}
+body { max-width: 700px; margin-left: 40ex; }
+h1.title { font-size: 160%; }
+h1 { font-size: 140%; }
+h2 { font-size: 130%; }
+h3 { font-size: 120%; }
+h4 { font-size: 110%; }
+pre, code { font-family: "Ubuntu Mono", Consolas, monospace; line-height: 1.3em; }
+pre + pre { margin-top: 1em; }
+h1 code, h2 code, h3 code, h4 code {
+    white-space: normal;
+    display: inline-block;
+    padding-left: 40px;
+    text-indent: -40px;
+}
+dt { font-weight: bold; }
+.docstring { margin-left: 40px; margin-bottom: 2em; }
+.bases { margin-left: 40px; font-style: italic; }
+pre { background: #eee; padding: 10px 15px 10px 15px; margin-left: 10px; margin: 0 20px 0 20px; }
+a { text-decoration: none; }
+#sidebar {
+    position: absolute;
+    top: 0;
+    left: 1ex;
+    width: 30ex;
+    height: 30ex;
+    font-family: Arial, Verdana, sans-serif;
+}
+#TOC, #module-toc {
+    position: absolute;
+    top: 27ex;
+    left: 1ex;
+    width: 30ex;
+    font-family: Arial, Verdana, sans-serif;
+    margin-top: 10px;
+    border-top: 1px solid #999;
+}
+#TOC ul, #sidebar ul, #module-toc ul {
+    list-style: none;
+    padding-left: 20px;
+}

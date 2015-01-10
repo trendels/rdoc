@@ -7,7 +7,7 @@ pandoc_opts := --standalone \
 	--filter=filters/autolink.py
 pandoc_from := markdown+compact_definition_lists
 pandoc_to := html5
-pandoc_template := ./templates/rdoc
+template_file := ./templates/rdoc.html5
 
 # Additional pandoc options when building module documentation
 pandoc_module_opts := --indented-code-classes=python
@@ -29,15 +29,15 @@ all: build/links.yml $(static_files) $(module_html) $(doc_html)
 
 build/rules: modules
 	@mkdir -p $(dir $@)
-	python bin/make_rules.py $(python_modules) > $@
+	rdoc-make-rules $(python_modules) > $@
 
 build/links.yml: $(module_links)
 	@mkdir -p $(dir $@)
-	python bin/make_links.py build/modules/*.links > $@
+	rdoc-make-links build/modules/*.links > $@
 
 build/modules/index.mkd: modules
 	@mkdir -p $(dir $@)
-	python bin/make_index.py $(python_modules) > $@
+	rdoc-make-index $(python_modules) > $@
 
 build/html/static/%: static/%
 	@mkdir -p $(dir $@)
@@ -45,13 +45,13 @@ build/html/static/%: static/%
 
 -include build/rules
 
-build/html/%.html: src/%.mkd meta.yml modules
+build/html/%.html: src/%.mkd meta.yml modules $(template_file)
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) $(pandoc_doc_opts) --metadata=link_prefix:$(shell python bin/relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=$(pandoc_template) $< meta.yml build/links.yml > $@
+	$(pandoc_bin) $(pandoc_opts) $(pandoc_doc_opts) --metadata=link_prefix:$(shell rdoc-relpath build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=$(template_file) $< meta.yml build/links.yml > $@
 
-build/html/modules/%.html: build/modules/%.mkd meta.yml modules
+build/html/modules/%.html: build/modules/%.mkd meta.yml modules $(template_file)
 	@mkdir -p $(dir $@)
-	$(pandoc_bin) $(pandoc_opts) $(pandoc_module_opts) --metadata=link_prefix:$(shell python bin/relpath.py build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=$(pandoc_template) $< meta.yml build/links.yml > $@
+	$(pandoc_bin) $(pandoc_opts) $(pandoc_module_opts) --metadata=link_prefix:$(shell rdoc-relpath build/html $@)/ --css=static/style.css --from=$(pandoc_from) --to=$(pandoc_to) --template=$(template_file) $< meta.yml build/links.yml > $@
 
 clean:
 	rm -rf build/
