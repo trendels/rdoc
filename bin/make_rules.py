@@ -9,4 +9,4 @@ for module_name in sys.argv[1:]:
     print "build/modules/%(name)s.mkd build/modules/%(name)s.links: %(path)s" \
             % {'name': module_name, 'path': path}
     print "\t@mkdir -p $(dir $@)"
-    print "\tpython extract.py %s build/modules/" % module_name
+    print "\tpython bin/extract.py %s build/modules/" % module_name
