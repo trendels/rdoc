@@ -67,7 +67,7 @@ def make_rules():
 
 
 def init():
-    # Recursively copy all fies from the data directory to the current
+    # Recursively copy all files from the data directory to the current
     # directory. Skip destination files that already exist.
     cwd = os.getcwd()
     print "Copying files ..."
